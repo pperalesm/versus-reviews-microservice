@@ -5,10 +5,10 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
 import { CommonModule } from "backend-common";
-import { Game, GameSchema } from "./domain/entities/game.entity";
-import { GamesResolver } from "./api/games.resolver";
-import { GamesService } from "./domain/games.service";
-import { GamesRepository } from "./infrastructure/games.repository";
+import { Review, ReviewSchema } from "./domain/entities/review.entity";
+import { ReviewsResolver } from "./api/reviews.resolver";
+import { ReviewsService } from "./domain/reviews.service";
+import { ReviewsRepository } from "./infrastructure/reviews.repository";
 
 @Module({
   imports: [
@@ -16,14 +16,14 @@ import { GamesRepository } from "./infrastructure/games.repository";
       envFilePath: "local.env",
       ignoreEnvFile: process.env.NODE_ENV && process.env.NODE_ENV != "local",
     }),
-    MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
+    MongooseModule.forFeature([{ name: Review.name, schema: ReviewSchema }]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), "src/games/schema.gql"),
+      autoSchemaFile: join(process.cwd(), "src/reviews/schema.gql"),
       context: ({ req, res }) => ({ req, res }),
     }),
     CommonModule,
   ],
-  providers: [GamesResolver, GamesService, GamesRepository],
+  providers: [ReviewsResolver, ReviewsService, ReviewsRepository],
 })
-export class GamesModule {}
+export class ReviewsModule {}

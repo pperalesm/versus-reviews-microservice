@@ -12,6 +12,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new ErrorsFilter());
-  await app.listen(3001);
+  await app.listen(3002);
 }
 bootstrap();
