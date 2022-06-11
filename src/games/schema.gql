@@ -1,0 +1,74 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type RatingDistribution {
+  ones: Int!
+  twos: Int!
+  threes: Int!
+  fours: Int!
+  fives: Int!
+}
+
+type Game {
+  title: String!
+  description: String!
+  company: String!
+  yearReleased: Int!
+  image: String!
+  tags: [String!]!
+  ratingDistribution: RatingDistribution!
+  averageRating: Float!
+  popularity: Int!
+}
+
+type Query {
+  findGames(arrayOptions: ArrayOptions!): [Game!]!
+  findPlayedGames(arrayOptions: ArrayOptions!): [Game!]!
+  findPendingGames(arrayOptions: ArrayOptions!): [Game!]!
+  findTags: [String!]!
+  findCompanies: [String!]!
+  findGame(title: String!): Game!
+}
+
+input ArrayOptions {
+  page: Pagination!
+  filter: GameFilter
+  sort: GameSort
+}
+
+input Pagination {
+  limit: Int!
+  skip: Int!
+}
+
+input GameFilter {
+  title: String
+  companies: [String!]
+  yearReleased: IntRange
+  tags: [String!]
+}
+
+input IntRange {
+  min: Int!
+  max: Int!
+}
+
+input GameSort {
+  title: Sorting
+  averageRating: Sorting
+  popularity: Sorting
+}
+
+enum Sorting {
+  Asc
+  Desc
+}
+
+type Mutation {
+  addGameToPlayed(title: String!): Game!
+  addGameToPending(title: String!): Game!
+  removeGameFromPlayed(title: String!): Game!
+  removeGameFromPending(title: String!): Game!
+  moveGameToPlayed(title: String!): Game!
+}
