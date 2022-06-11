@@ -17,5 +17,48 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  blab: Review!
+  findReviews(reviewOptions: ReviewOptions!): [Review!]!
+}
+
+input ReviewOptions {
+  page: Pagination!
+  filter: ReviewFilter
+  sort: ReviewSort
+}
+
+input Pagination {
+  limit: Int!
+  skip: Int!
+}
+
+input ReviewFilter {
+  username: String
+  game: String
+  rating: Int
+  updatedAt: DateRange
+}
+
+input DateRange {
+  min: DateTime!
+  max: DateTime!
+}
+
+input ReviewSort {
+  updatedAt: Sorting
+  rating: Sorting
+}
+
+enum Sorting {
+  Asc
+  Desc
+}
+
+type Mutation {
+  createAccount(createReviewDto: CreateReviewDto!): Review!
+}
+
+input CreateReviewDto {
+  game: String!
+  rating: Int!
+  comment: String
 }
