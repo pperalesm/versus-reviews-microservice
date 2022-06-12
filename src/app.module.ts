@@ -7,7 +7,7 @@ import { ReviewsModule } from "./reviews/reviews.module";
   imports: [
     ReviewsModule,
     MongooseModule.forRoot(
-      `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URL}/${Constants.REVIEWS_DB}?authSource=admin`,
+      `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URL}/${Constants.REVIEWS_DB}?retryWrites=true&w=majority`,
     ),
   ],
 })
