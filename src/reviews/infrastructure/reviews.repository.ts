@@ -7,6 +7,6 @@ import { Review, ReviewDocument } from "../domain/entities/review.entity";
 export class ReviewsRepository {
   constructor(
     @InjectModel(Review.name)
-    private gameModel: Model<ReviewDocument>,
+    private reviewModel: Model<ReviewDocument>,
   ) {}
 }
