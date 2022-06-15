@@ -54,7 +54,7 @@ enum Sorting {
 }
 
 type Mutation {
-  createAccount(createReviewDto: CreateReviewDto!): Review!
+  createReview(createReviewDto: CreateReviewDto!): Review!
 }
 
 input CreateReviewDto {

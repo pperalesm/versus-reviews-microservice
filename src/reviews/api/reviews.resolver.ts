@@ -12,7 +12,7 @@ export class ReviewsResolver {
 
   @Mutation(() => Review)
   @UseGuards(JwtGqlGuard)
-  async createAccount(
+  async createReview(
     @AuthenticatedUser() authUser: AuthUser,
     @Args("createReviewDto") createReviewDto: CreateReviewDto,
   ) {
@@ -21,6 +21,6 @@ export class ReviewsResolver {
 
   @Query(() => [Review])
   async findReviews(@Args("reviewOptions") reviewOptions: ReviewOptions) {
-    return "";
+    return await this.reviewsService.find();
   }
 }

@@ -10,4 +10,8 @@ export class ReviewsService {
   async create(authUser: AuthUser, createReviewDto: CreateReviewDto) {
     return "";
   }
+
+  async find() {
+    return "";
+  }
 }
