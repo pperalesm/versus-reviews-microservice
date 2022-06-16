@@ -6,7 +6,8 @@ type Review {
   username: String!
   game: String!
   rating: Int!
-  comment: String!
+  payToWin: Int
+  comment: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -35,6 +36,7 @@ input ReviewFilter {
   username: String
   game: String
   rating: Int
+  payToWin: Int
   updatedAt: DateRange
 }
 
@@ -46,6 +48,7 @@ input DateRange {
 input ReviewSort {
   updatedAt: Sorting
   rating: Sorting
+  payToWin: Sorting
 }
 
 enum Sorting {
@@ -60,5 +63,6 @@ type Mutation {
 input CreateReviewDto {
   game: String!
   rating: Int!
+  payToWin: Int
   comment: String
 }

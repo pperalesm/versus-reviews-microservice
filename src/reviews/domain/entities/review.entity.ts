@@ -19,7 +19,11 @@ export class Review {
   @Prop()
   rating?: number;
 
-  @Field()
+  @Field(() => Int, { nullable: true })
+  @Prop()
+  payToWin?: number;
+
+  @Field({ nullable: true })
   @Prop()
   comment?: string;
 
@@ -34,6 +38,7 @@ export class Review {
     username,
     game,
     rating,
+    payToWin,
     comment,
     createdAt,
     updatedAt,
@@ -42,6 +47,7 @@ export class Review {
     username?: string;
     game?: string;
     rating?: number;
+    payToWin?: number;
     comment?: string;
     createdAt?: Date;
     updatedAt?: Date;
@@ -50,6 +56,7 @@ export class Review {
     this.username = username;
     this.game = game;
     this.rating = rating;
+    this.payToWin = payToWin;
     this.comment = comment;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;

@@ -22,6 +22,13 @@ export class CreateReviewDto {
   @Max(Constants.MAX_RATING_VALUE)
   rating: number;
 
+  @Field(() => Int, { nullable: true })
+  @IsInt()
+  @Min(Constants.MIN_P2W_VALUE)
+  @Max(Constants.MAX_P2W_VALUE)
+  @IsOptional()
+  payToWin?: number;
+
   @Field({ nullable: true })
   @MinLength(Constants.MIN_COMMENT_CHARACTERS)
   @MaxLength(Constants.MAX_COMMENT_CHARACTERS)

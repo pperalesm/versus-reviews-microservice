@@ -13,4 +13,9 @@ export class ReviewSort {
   @IsEnum(Sorting)
   @IsOptional()
   rating?: Sorting;
+
+  @Field(() => Sorting, { nullable: true })
+  @IsEnum(Sorting)
+  @IsOptional()
+  payToWin?: Sorting;
 }

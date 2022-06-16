@@ -20,6 +20,11 @@ export class ReviewFilter {
   @IsOptional()
   rating?: number;
 
+  @Field(() => Int, { nullable: true })
+  @IsInt()
+  @IsOptional()
+  payToWin?: number;
+
   @Field(() => DateRange, { nullable: true })
   @ValidateNested()
   @Type(() => DateRange)

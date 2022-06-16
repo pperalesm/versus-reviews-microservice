@@ -14,5 +14,6 @@ import { GamesRepository } from "./infrastructure/games.repository";
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
   ],
   providers: [GamesService, GamesRepository],
+  exports: [GamesService, GamesRepository],
 })
 export class GamesModule {}

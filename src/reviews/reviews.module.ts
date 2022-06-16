@@ -8,6 +8,7 @@ import { ReviewsRepository } from "./infrastructure/reviews.repository";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { Constants } from "src/constants";
 import { KafkaConsumer } from "./infrastructure/kafka.consumer";
+import { GamesModule } from "src/games/games.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { KafkaConsumer } from "./infrastructure/kafka.consumer";
       },
     ]),
     CommonModule,
+    GamesModule,
   ],
   providers: [ReviewsResolver, ReviewsService, ReviewsRepository],
   controllers: [KafkaConsumer],

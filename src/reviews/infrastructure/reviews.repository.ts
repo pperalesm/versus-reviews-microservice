@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Review, ReviewDocument } from "../domain/entities/review.entity";
@@ -9,4 +9,12 @@ export class ReviewsRepository {
     @InjectModel(Review.name)
     private reviewModel: Model<ReviewDocument>,
   ) {}
+
+  async create(review: Review): Promise<Review> {
+    try {
+      return await this.reviewModel.create(review);
+    } catch (e) {
+      throw new ConflictException();
+    }
+  }
 }
