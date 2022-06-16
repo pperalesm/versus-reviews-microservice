@@ -13,4 +13,8 @@ export class GamesService {
   async create(title: string) {
     return await this.gamesRepository.create(new Game({ title: title }));
   }
+
+  async delete(title: string) {
+    return await this.gamesRepository.create(new Game({ title: title }));
+  }
 }
