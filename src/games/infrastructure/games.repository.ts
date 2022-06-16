@@ -31,4 +31,14 @@ export class GamesRepository {
       throw new ConflictException();
     }
   }
+
+  async deleteOne(filter: Record<string, unknown>): Promise<Game> {
+    const game = await this.gameModel.findOneAndDelete(filter);
+
+    if (!game) {
+      throw new NotFoundException();
+    }
+
+    return game;
+  }
 }

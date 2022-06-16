@@ -15,4 +15,13 @@ export class KafkaConsumer {
       console.error(e);
     }
   }
+
+  @EventPattern(Constants.GAME_DELETED_EVENT)
+  async handleGameDeleted(data: Record<string, any>) {
+    try {
+      await this.gamesService.deleteOne(data.value.title);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }

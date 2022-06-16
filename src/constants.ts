@@ -8,4 +8,5 @@ export const Constants = {
   KAFKA_CONSUMER_GROUP_ID: "reviews-consumer",
   KAFKA_CLIENT_ID: "reviews",
   GAME_CREATED_EVENT: "game_created",
+  GAME_DELETED_EVENT: "game_deleted",
 };
