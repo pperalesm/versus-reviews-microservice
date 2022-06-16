@@ -9,9 +9,14 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
 import { Constants } from "src/constants";
 import { KafkaConsumer } from "./infrastructure/kafka.consumer";
 import { GamesModule } from "src/games/games.module";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: "local.env",
+      ignoreEnvFile: process.env.NODE_ENV && process.env.NODE_ENV != "local",
+    }),
     MongooseModule.forFeature([{ name: Review.name, schema: ReviewSchema }]),
     ClientsModule.register([
       {
