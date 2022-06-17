@@ -10,6 +10,7 @@ import { Review } from "../domain/entities/review.entity";
 import { ReviewsService } from "../domain/reviews.service";
 import { CreateReviewDto } from "./dto/create-review.dto";
 import { ReviewOptions } from "./dto/review-options";
+import { UpdateReviewDto } from "./dto/update-review.dto";
 
 @Resolver(() => Review)
 export class ReviewsResolver {
@@ -36,5 +37,14 @@ export class ReviewsResolver {
   @Query(() => [Review])
   async findReviews(@Args("reviewOptions") reviewOptions: ReviewOptions) {
     return await this.reviewsService.find(reviewOptions);
+  }
+
+  @Mutation(() => Review)
+  @UseGuards(JwtGqlGuard, ActiveGqlGuard)
+  async updateReview(
+    @AuthenticatedUser() authUser: AuthUser,
+    @Args("updateReviewDto") updateReviewDto: UpdateReviewDto,
+  ) {
+    return await this.reviewsService.updateOne(authUser, updateReviewDto);
   }
 }

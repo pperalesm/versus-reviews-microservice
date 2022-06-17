@@ -3,6 +3,7 @@ import { AuthUser, Sorting } from "backend-common";
 import { GamesService } from "src/games/domain/games.service";
 import { CreateReviewDto } from "../api/dto/create-review.dto";
 import { ReviewOptions } from "../api/dto/review-options";
+import { UpdateReviewDto } from "../api/dto/update-review.dto";
 import { ReviewsRepository } from "../infrastructure/reviews.repository";
 import { Review } from "./entities/review.entity";
 
@@ -58,5 +59,15 @@ export class ReviewsService {
     }
 
     return await this.reviewsRepository.find(reviewOptions.page, filter, sort);
+  }
+
+  async updateOne(authUser: AuthUser, updateReviewDto: UpdateReviewDto) {
+    return await this.reviewsRepository.updateOne(
+      {
+        username: authUser.username,
+        game: updateReviewDto.game,
+      },
+      { ...updateReviewDto },
+    );
   }
 }
