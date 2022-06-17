@@ -58,6 +58,7 @@ enum Sorting {
 
 type Mutation {
   createReview(createReviewDto: CreateReviewDto!): Review!
+  deleteReview(game: String!): Review!
 }
 
 input CreateReviewDto {

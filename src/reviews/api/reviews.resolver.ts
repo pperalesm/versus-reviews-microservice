@@ -1,6 +1,11 @@
 import { UseGuards } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { AuthenticatedUser, AuthUser, JwtGqlGuard } from "backend-common";
+import {
+  ActiveGqlGuard,
+  AuthenticatedUser,
+  AuthUser,
+  JwtGqlGuard,
+} from "backend-common";
 import { Review } from "../domain/entities/review.entity";
 import { ReviewsService } from "../domain/reviews.service";
 import { CreateReviewDto } from "./dto/create-review.dto";
@@ -11,7 +16,7 @@ export class ReviewsResolver {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Mutation(() => Review)
-  @UseGuards(JwtGqlGuard)
+  @UseGuards(JwtGqlGuard, ActiveGqlGuard)
   async createReview(
     @AuthenticatedUser() authUser: AuthUser,
     @Args("createReviewDto") createReviewDto: CreateReviewDto,
@@ -19,8 +24,17 @@ export class ReviewsResolver {
     return await this.reviewsService.create(authUser, createReviewDto);
   }
 
+  @Mutation(() => Review)
+  @UseGuards(JwtGqlGuard, ActiveGqlGuard)
+  async deleteReview(
+    @AuthenticatedUser() authUser: AuthUser,
+    @Args("game") game: string,
+  ) {
+    return await this.reviewsService.deleteOne(authUser, game);
+  }
+
   @Query(() => [Review])
   async findReviews(@Args("reviewOptions") reviewOptions: ReviewOptions) {
-    return await this.reviewsService.find();
+    return await this.reviewsService.find(reviewOptions);
   }
 }
