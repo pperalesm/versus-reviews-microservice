@@ -19,6 +19,7 @@ scalar DateTime
 
 type Query {
   findReviews(reviewOptions: ReviewOptions!): [Review!]!
+  findReview(findReviewDto: FindReviewDto!): Review!
 }
 
 input ReviewOptions {
@@ -54,6 +55,11 @@ input ReviewSort {
 enum Sorting {
   Asc
   Desc
+}
+
+input FindReviewDto {
+  username: String!
+  game: String!
 }
 
 type Mutation {

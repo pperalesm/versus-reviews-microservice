@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { AuthUser, Sorting } from "backend-common";
 import { GamesService } from "src/games/domain/games.service";
 import { CreateReviewDto } from "../api/dto/create-review.dto";
+import { FindReviewDto } from "../api/dto/find-review.dto";
 import { ReviewOptions } from "../api/dto/review-options";
 import { UpdateReviewDto } from "../api/dto/update-review.dto";
 import { ReviewsRepository } from "../infrastructure/reviews.repository";
@@ -69,5 +70,12 @@ export class ReviewsService {
       },
       { ...updateReviewDto },
     );
+  }
+
+  async findOne(findReviewDto: FindReviewDto) {
+    return await this.reviewsRepository.findOne({
+      username: findReviewDto.username,
+      game: findReviewDto.game,
+    });
   }
 }

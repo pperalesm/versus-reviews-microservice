@@ -9,6 +9,7 @@ import {
 import { Review } from "../domain/entities/review.entity";
 import { ReviewsService } from "../domain/reviews.service";
 import { CreateReviewDto } from "./dto/create-review.dto";
+import { FindReviewDto } from "./dto/find-review.dto";
 import { ReviewOptions } from "./dto/review-options";
 import { UpdateReviewDto } from "./dto/update-review.dto";
 
@@ -46,5 +47,10 @@ export class ReviewsResolver {
     @Args("updateReviewDto") updateReviewDto: UpdateReviewDto,
   ) {
     return await this.reviewsService.updateOne(authUser, updateReviewDto);
+  }
+
+  @Query(() => Review)
+  async findReview(@Args("findReviewDto") findReviewDto: FindReviewDto) {
+    return await this.reviewsService.findOne(findReviewDto);
   }
 }

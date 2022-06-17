@@ -83,4 +83,14 @@ export class ReviewsRepository {
 
     return newReview;
   }
+
+  async findOne(filter: Record<string, unknown>): Promise<Review> {
+    const review = await this.reviewModel.findOne(filter);
+
+    if (!review) {
+      throw new NotFoundException();
+    }
+
+    return review;
+  }
 }
