@@ -56,4 +56,31 @@ export class ReviewsRepository {
       .limit(page.limit)
       .sort(sort);
   }
+
+  async updateOne(
+    filter: Record<string, unknown>,
+    updateInfo: Record<string, unknown>,
+  ): Promise<Review> {
+    const session = await this.reviewModel.startSession();
+
+    session.startTransaction();
+
+    const oldReview = await this.reviewModel
+      .findOneAndUpdate(filter, updateInfo)
+      .session(session);
+    const newReview = await this.reviewModel.findOne(filter).session(session);
+
+    await session.commitTransaction();
+
+    if (!oldReview || !newReview) {
+      throw new NotFoundException();
+    }
+
+    this.kafka.emit(CommonConstants.REVIEW_UPDATED_EVENT, {
+      oldReview: oldReview.toJSON(),
+      newReview: newReview.toJSON(),
+    });
+
+    return newReview;
+  }
 }
