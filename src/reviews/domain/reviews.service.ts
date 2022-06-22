@@ -78,4 +78,11 @@ export class ReviewsService {
       game: findReviewDto.game,
     });
   }
+
+  async gameUpdated(oldGame: string, newGame: string) {
+    return await this.reviewsRepository.updateMany(
+      { game: oldGame },
+      { game: newGame },
+    );
+  }
 }

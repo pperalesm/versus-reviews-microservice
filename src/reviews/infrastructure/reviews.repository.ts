@@ -93,4 +93,11 @@ export class ReviewsRepository {
 
     return review;
   }
+
+  async updateMany(
+    filter: Record<string, unknown>,
+    updateInfo: Record<string, unknown>,
+  ) {
+    return await this.reviewModel.updateMany(filter, updateInfo);
+  }
 }
