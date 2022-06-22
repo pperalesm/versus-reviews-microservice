@@ -80,9 +80,11 @@ export class ReviewsService {
   }
 
   async gameUpdated(oldGame: string, newGame: string) {
-    return await this.reviewsRepository.updateMany(
-      { game: oldGame },
-      { game: newGame },
-    );
+    if (oldGame != newGame) {
+      return await this.reviewsRepository.updateMany(
+        { game: oldGame },
+        { game: newGame },
+      );
+    }
   }
 }
