@@ -14,7 +14,7 @@ export class GamesRepository {
     private gameModel: Model<GameDocument>,
   ) {}
 
-  async findOne(filter: Record<string, unknown>) {
+  async findOne(filter: Record<string, unknown>): Promise<Game> {
     const game = await this.gameModel.findOne(filter);
 
     if (!game) {
@@ -34,6 +34,21 @@ export class GamesRepository {
 
   async deleteOne(filter: Record<string, unknown>): Promise<Game> {
     const game = await this.gameModel.findOneAndDelete(filter);
+
+    if (!game) {
+      throw new NotFoundException();
+    }
+
+    return game;
+  }
+
+  async updateOne(
+    filter: Record<string, unknown>,
+    updateInfo: Record<string, unknown>,
+  ): Promise<Game> {
+    const game = await this.gameModel.findOneAndUpdate(filter, updateInfo, {
+      new: true,
+    });
 
     if (!game) {
       throw new NotFoundException();

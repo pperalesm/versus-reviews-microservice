@@ -24,4 +24,16 @@ export class KafkaConsumer {
       console.error(e);
     }
   }
+
+  @EventPattern(CommonConstants.GAME_UPDATED_EVENT)
+  async handleGameUpdated(data: Record<string, any>) {
+    try {
+      await this.gamesService.updateOne(
+        data.value.oldGame.title,
+        data.value.newGame.title,
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }

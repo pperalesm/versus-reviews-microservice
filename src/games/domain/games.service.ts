@@ -17,4 +17,13 @@ export class GamesService {
   async deleteOne(title: string) {
     return await this.gamesRepository.deleteOne({ title: title });
   }
+
+  async updateOne(oldTitle: string, newTitle: string) {
+    if (oldTitle != newTitle) {
+      return await this.gamesRepository.updateOne(
+        { title: oldTitle },
+        { title: newTitle },
+      );
+    }
+  }
 }
