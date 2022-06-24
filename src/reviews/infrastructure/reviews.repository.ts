@@ -70,16 +70,18 @@ export class ReviewsRepository {
     filter: Record<string, unknown>,
     updateInfo: Record<string, unknown>,
   ): Promise<Review> {
+    let oldReview: ReviewDocument;
+    let newReview: ReviewDocument;
     const session = await this.reviewModel.startSession();
 
-    session.startTransaction();
+    await session.withTransaction(async () => {
+      oldReview = await this.reviewModel
+        .findOneAndUpdate(filter, updateInfo)
+        .session(session);
+      newReview = await this.reviewModel.findOne(filter).session(session);
+    });
 
-    const oldReview = await this.reviewModel
-      .findOneAndUpdate(filter, updateInfo)
-      .session(session);
-    const newReview = await this.reviewModel.findOne(filter).session(session);
-
-    await session.commitTransaction();
+    await session.endSession();
 
     if (!oldReview || !newReview) {
       throw new NotFoundException();
@@ -101,12 +103,5 @@ export class ReviewsRepository {
     }
 
     return review;
-  }
-
-  async updateMany(
-    filter: Record<string, unknown>,
-    updateInfo: Record<string, unknown>,
-  ) {
-    return await this.reviewModel.updateMany(filter, updateInfo);
   }
 }

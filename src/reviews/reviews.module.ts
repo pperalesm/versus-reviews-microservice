@@ -7,7 +7,7 @@ import { ReviewsService } from "./domain/reviews.service";
 import { ReviewsRepository } from "./infrastructure/reviews.repository";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { Constants } from "src/constants";
-import { KafkaConsumer } from "./infrastructure/kafka.consumer";
+import { KafkaConsumer } from "./api/kafka.consumer";
 import { GamesModule } from "src/games/games.module";
 import { ConfigModule } from "@nestjs/config";
 
