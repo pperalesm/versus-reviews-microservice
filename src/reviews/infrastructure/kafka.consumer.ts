@@ -12,7 +12,7 @@ export class KafkaConsumer {
   ) {}
 
   @EventPattern(CommonConstants.GAMES_TOPIC)
-  async handleGameUpdated(
+  async handleGameEvent(
     @Payload("value") data: KafkaEvent,
     @Payload("timestamp") eventId: string,
   ) {
