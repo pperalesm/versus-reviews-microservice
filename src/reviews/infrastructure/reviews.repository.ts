@@ -22,10 +22,10 @@ export class ReviewsRepository {
     try {
       const createdReview = await this.reviewModel.create(review);
 
-      this.kafka.emit(
-        CommonConstants.REVIEW_CREATED_EVENT,
-        createdReview.toJSON(),
-      );
+      this.kafka.emit(CommonConstants.REVIEW_CREATED_EVENT, {
+        key: createdReview.id,
+        value: createdReview.toJSON(),
+      });
 
       return createdReview;
     } catch (e) {
@@ -40,7 +40,10 @@ export class ReviewsRepository {
       throw new NotFoundException();
     }
 
-    this.kafka.emit(CommonConstants.REVIEW_DELETED_EVENT, review.toJSON());
+    this.kafka.emit(CommonConstants.REVIEW_DELETED_EVENT, {
+      key: review.id,
+      value: review.toJSON(),
+    });
 
     return review;
   }
@@ -77,8 +80,11 @@ export class ReviewsRepository {
     }
 
     this.kafka.emit(CommonConstants.REVIEW_UPDATED_EVENT, {
-      oldReview: oldReview.toJSON(),
-      newReview: newReview.toJSON(),
+      key: newReview.id,
+      value: {
+        oldReview: oldReview.toJSON(),
+        newReview: newReview.toJSON(),
+      },
     });
 
     return newReview;
