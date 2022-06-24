@@ -6,7 +6,13 @@ import {
 } from "@nestjs/common";
 import { ClientKafka } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
-import { CommonConstants, Pagination } from "backend-common";
+import {
+  CommonConstants,
+  CreatedEvent,
+  DeletedEvent,
+  Pagination,
+  UpdatedEvent,
+} from "backend-common";
 import { Model, SortOrder } from "mongoose";
 import { Review, ReviewDocument } from "../domain/entities/review.entity";
 
@@ -22,9 +28,9 @@ export class ReviewsRepository {
     try {
       const createdReview = await this.reviewModel.create(review);
 
-      this.kafka.emit(CommonConstants.REVIEW_CREATED_EVENT, {
+      this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
         key: createdReview.id,
-        value: createdReview.toJSON(),
+        value: new CreatedEvent(createdReview),
       });
 
       return createdReview;
@@ -40,9 +46,9 @@ export class ReviewsRepository {
       throw new NotFoundException();
     }
 
-    this.kafka.emit(CommonConstants.REVIEW_DELETED_EVENT, {
+    this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
       key: review.id,
-      value: review.toJSON(),
+      value: new DeletedEvent(review),
     });
 
     return review;
@@ -79,12 +85,9 @@ export class ReviewsRepository {
       throw new NotFoundException();
     }
 
-    this.kafka.emit(CommonConstants.REVIEW_UPDATED_EVENT, {
+    this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
       key: newReview.id,
-      value: {
-        oldReview: oldReview.toJSON(),
-        newReview: newReview.toJSON(),
-      },
+      value: new UpdatedEvent(oldReview, newReview),
     });
 
     return newReview;

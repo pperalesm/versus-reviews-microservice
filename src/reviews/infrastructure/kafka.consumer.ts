@@ -1,6 +1,6 @@
 import { Controller } from "@nestjs/common";
-import { EventPattern } from "@nestjs/microservices";
-import { CommonConstants } from "backend-common";
+import { EventPattern, Payload } from "@nestjs/microservices";
+import { CommonConstants, KafkaEvent } from "backend-common";
 import { GamesService } from "src/games/domain/games.service";
 import { ReviewsService } from "../domain/reviews.service";
 
@@ -11,37 +11,28 @@ export class KafkaConsumer {
     private readonly reviewsService: ReviewsService,
   ) {}
 
-  @EventPattern(CommonConstants.GAME_CREATED_EVENT)
-  async handleGameCreated(data: Record<string, any>) {
+  @EventPattern(CommonConstants.GAMES_TOPIC)
+  async handleGameUpdated(
+    @Payload("value") data: KafkaEvent,
+    @Payload("timestamp") eventId: string,
+  ) {
     try {
-      await this.gamesService.create(data.value.title);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  @EventPattern(CommonConstants.GAME_DELETED_EVENT)
-  async handleGameDeleted(data: Record<string, any>) {
-    try {
-      await this.gamesService.deleteOne(data.value.title);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  @EventPattern(CommonConstants.GAME_UPDATED_EVENT)
-  async handleGameUpdated(data: Record<string, any>) {
-    try {
-      await Promise.all([
-        this.gamesService.updateOne(
-          data.value.oldGame.title,
-          data.value.newGame.title,
-        ),
-        this.reviewsService.gameUpdated(
-          data.value.oldGame.title,
-          data.value.newGame.title,
-        ),
-      ]);
+      if (data.type == CommonConstants.CREATED_EVENT) {
+        await this.gamesService.create(data.payload.item.title);
+      } else if (data.type == CommonConstants.DELETED_EVENT) {
+        await this.gamesService.deleteOne(data.payload.item.title);
+      } else if (data.type == CommonConstants.UPDATED_EVENT) {
+        await Promise.all([
+          this.gamesService.updateOne(
+            data.payload.oldItem.title,
+            data.payload.newItem.title,
+          ),
+          this.reviewsService.gameUpdated(
+            data.payload.oldItem.title,
+            data.payload.newItem.title,
+          ),
+        ]);
+      }
     } catch (e) {
       console.error(e);
     }
