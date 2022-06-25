@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { ClientKafka } from "@nestjs/microservices";
-import { InjectModel } from "@nestjs/mongoose";
+import { InjectConnection, InjectModel } from "@nestjs/mongoose";
 import {
   CommonConstants,
   CreatedEvent,
@@ -13,13 +13,14 @@ import {
   Pagination,
   UpdatedEvent,
 } from "backend-common";
-import { Model, SortOrder } from "mongoose";
+import { Connection, Model, SortOrder } from "mongoose";
 import { Review, ReviewDocument } from "../domain/entities/review.entity";
 
 @Injectable()
 export class ReviewsRepository {
   constructor(
     @Inject("KAFKA") private readonly kafka: ClientKafka,
+    @InjectConnection() private connection: Connection,
     @InjectModel(Review.name)
     private reviewModel: Model<ReviewDocument>,
   ) {}
@@ -72,16 +73,13 @@ export class ReviewsRepository {
   ): Promise<Review> {
     let oldReview: ReviewDocument;
     let newReview: ReviewDocument;
-    const session = await this.reviewModel.startSession();
 
-    await session.withTransaction(async () => {
+    await this.connection.transaction(async (session) => {
       oldReview = await this.reviewModel
         .findOneAndUpdate(filter, updateInfo)
         .session(session);
       newReview = await this.reviewModel.findOne(filter).session(session);
     });
-
-    await session.endSession();
 
     if (!oldReview || !newReview) {
       throw new NotFoundException();
