@@ -35,19 +35,23 @@ export class GamesRepository {
 
   async create(game: Game, timestamp: string) {
     await this.connection.transaction(async (session) => {
-      await this.eventModel.create([{ timestamp: timestamp }], {
-        session: session,
-      });
-      await this.gameModel.create([game], { session: session });
+      await Promise.all([
+        this.eventModel.create([{ timestamp: timestamp }], {
+          session: session,
+        }),
+        this.gameModel.create([game], { session: session }),
+      ]);
     });
   }
 
   async deleteOne(filter: Record<string, unknown>, timestamp: string) {
     await this.connection.transaction(async (session) => {
-      await this.eventModel.create([{ timestamp: timestamp }], {
-        session: session,
-      });
-      await this.gameModel.deleteOne(filter).session(session);
+      await Promise.all([
+        this.eventModel.create([{ timestamp: timestamp }], {
+          session: session,
+        }),
+        this.gameModel.deleteOne(filter).session(session),
+      ]);
     });
   }
 
@@ -59,15 +63,15 @@ export class GamesRepository {
     timestamp: string,
   ) {
     await this.connection.transaction(async (session) => {
-      await this.eventModel.create([{ timestamp: timestamp }], {
-        session: session,
-      });
-      await this.reviewModel
-        .updateMany(reviewsfilter, reviewsUpdateInfo)
-        .session(session);
-      await this.gameModel
-        .updateOne(gamesfilter, gamesUpdateInfo)
-        .session(session);
+      await Promise.all([
+        this.eventModel.create([{ timestamp: timestamp }], {
+          session: session,
+        }),
+        this.reviewModel
+          .updateMany(reviewsfilter, reviewsUpdateInfo)
+          .session(session),
+        this.gameModel.updateOne(gamesfilter, gamesUpdateInfo).session(session),
+      ]);
     });
   }
 }
