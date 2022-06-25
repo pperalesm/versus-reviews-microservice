@@ -10,22 +10,22 @@ export class GamesService {
     return await this.gamesRepository.findOne({ title: title });
   }
 
-  async handleCreated(title: string, timestamp: string) {
-    await this.gamesRepository.create(new Game({ title: title }), timestamp);
+  async handleCreated(title: string, uuid: string) {
+    await this.gamesRepository.create(new Game({ title: title }), uuid);
   }
 
-  async handleDeleted(title: string, timestamp: string) {
-    await this.gamesRepository.deleteOne({ title: title }, timestamp);
+  async handleDeleted(title: string, uuid: string) {
+    await this.gamesRepository.deleteOne({ title: title }, uuid);
   }
 
-  async handleUpdated(oldTitle: string, newTitle: string, timestamp: string) {
+  async handleUpdated(oldTitle: string, newTitle: string, uuid: string) {
     if (oldTitle != newTitle) {
       await this.gamesRepository.updateOne(
         { game: oldTitle },
         { game: newTitle },
         { title: oldTitle },
         { title: newTitle },
-        timestamp,
+        uuid,
       );
     }
   }

@@ -33,10 +33,10 @@ export class GamesRepository {
     return game;
   }
 
-  async create(game: Game, timestamp: string) {
+  async create(game: Game, uuid: string) {
     await this.connection.transaction(async (session) => {
       await Promise.all([
-        this.eventModel.create([{ timestamp: timestamp }], {
+        this.eventModel.create([{ uuid: uuid }], {
           session: session,
         }),
         this.gameModel.create([game], { session: session }),
@@ -44,10 +44,10 @@ export class GamesRepository {
     });
   }
 
-  async deleteOne(filter: Record<string, unknown>, timestamp: string) {
+  async deleteOne(filter: Record<string, unknown>, uuid: string) {
     await this.connection.transaction(async (session) => {
       await Promise.all([
-        this.eventModel.create([{ timestamp: timestamp }], {
+        this.eventModel.create([{ uuid: uuid }], {
           session: session,
         }),
         this.gameModel.deleteOne(filter).session(session),
@@ -60,11 +60,11 @@ export class GamesRepository {
     reviewsUpdateInfo: Record<string, unknown>,
     gamesfilter: Record<string, unknown>,
     gamesUpdateInfo: Record<string, unknown>,
-    timestamp: string,
+    uuid: string,
   ) {
     await this.connection.transaction(async (session) => {
       await Promise.all([
-        this.eventModel.create([{ timestamp: timestamp }], {
+        this.eventModel.create([{ uuid: uuid }], {
           session: session,
         }),
         this.reviewModel

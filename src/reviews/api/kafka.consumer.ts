@@ -8,26 +8,23 @@ export class KafkaConsumer {
   constructor(private readonly gamesService: GamesService) {}
 
   @EventPattern(CommonConstants.GAMES_TOPIC)
-  async handleGameEvent(
-    @Payload("value") data: KafkaEvent,
-    @Payload("timestamp") timestamp: string,
-  ) {
+  async handleGameEvent(@Payload("value") data: KafkaEvent) {
     try {
       if (data.type == CommonConstants.CREATED_EVENT) {
         await this.gamesService.handleCreated(
           data.payload.item.title,
-          timestamp,
+          data.uuid,
         );
       } else if (data.type == CommonConstants.DELETED_EVENT) {
         await this.gamesService.handleDeleted(
           data.payload.item.title,
-          timestamp,
+          data.uuid,
         );
       } else if (data.type == CommonConstants.UPDATED_EVENT) {
         await this.gamesService.handleUpdated(
           data.payload.oldItem.title,
           data.payload.newItem.title,
-          timestamp,
+          data.uuid,
         );
       }
     } catch (e) {
