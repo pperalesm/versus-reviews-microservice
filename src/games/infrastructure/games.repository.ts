@@ -33,7 +33,7 @@ export class GamesRepository {
     return game;
   }
 
-  async handleCreate(game: Game, timestamp: string) {
+  async create(game: Game, timestamp: string) {
     await this.connection.transaction(async (session) => {
       await this.eventModel.create([{ timestamp: timestamp }], {
         session: session,
@@ -42,18 +42,20 @@ export class GamesRepository {
     });
   }
 
-  async handleDelete(filter: Record<string, unknown>, timestamp: string) {
+  async deleteOne(filter: Record<string, unknown>, timestamp: string) {
     await this.connection.transaction(async (session) => {
       await this.eventModel.create([{ timestamp: timestamp }], {
         session: session,
       });
-      await this.gameModel.findOneAndDelete(filter).session(session);
+      await this.gameModel.deleteOne(filter).session(session);
     });
   }
 
-  async handleTitleChange(
-    oldTitle: string,
-    newTitle: string,
+  async updateOne(
+    reviewsfilter: Record<string, unknown>,
+    reviewsUpdateInfo: Record<string, unknown>,
+    gamesfilter: Record<string, unknown>,
+    gamesUpdateInfo: Record<string, unknown>,
     timestamp: string,
   ) {
     await this.connection.transaction(async (session) => {
@@ -61,16 +63,10 @@ export class GamesRepository {
         session: session,
       });
       await this.reviewModel
-        .updateMany({ game: oldTitle }, { game: newTitle })
+        .updateMany(reviewsfilter, reviewsUpdateInfo)
         .session(session);
       await this.gameModel
-        .findOneAndUpdate(
-          { title: oldTitle },
-          { title: newTitle },
-          {
-            new: true,
-          },
-        )
+        .updateOne(gamesfilter, gamesUpdateInfo)
         .session(session);
     });
   }
