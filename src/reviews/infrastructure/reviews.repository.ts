@@ -14,6 +14,7 @@ import {
   UpdatedEvent,
 } from "backend-common";
 import { Connection, Model, SortOrder } from "mongoose";
+import { firstValueFrom } from "rxjs";
 import { Review, ReviewDocument } from "../domain/entities/review.entity";
 
 @Injectable()
@@ -26,30 +27,44 @@ export class ReviewsRepository {
   ) {}
 
   async create(review: Review): Promise<Review> {
-    try {
-      const createdReview = await this.reviewModel.create(review);
+    let createdReview: ReviewDocument;
 
-      this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
-        key: createdReview.id,
-        value: new CreatedEvent(createdReview),
-      });
+    await this.connection.transaction(async (session) => {
+      try {
+        [createdReview] = await this.reviewModel.create([review], {
+          session: session,
+        });
+      } catch (e) {
+        throw new ConflictException();
+      }
 
-      return createdReview;
-    } catch (e) {
-      throw new ConflictException();
-    }
+      await firstValueFrom(
+        this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
+          key: createdReview.id,
+          value: new CreatedEvent(createdReview),
+        }),
+      );
+    });
+
+    return createdReview;
   }
 
   async deleteOne(filter: Record<string, unknown>): Promise<Review> {
-    const review = await this.reviewModel.findOneAndDelete(filter);
+    let review: ReviewDocument;
 
-    if (!review) {
-      throw new NotFoundException();
-    }
+    await this.connection.transaction(async (session) => {
+      review = await this.reviewModel.findOneAndDelete(filter).session(session);
 
-    this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
-      key: review.id,
-      value: new DeletedEvent(review),
+      if (!review) {
+        throw new NotFoundException();
+      }
+
+      await firstValueFrom(
+        this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
+          key: review.id,
+          value: new DeletedEvent(review),
+        }),
+      );
     });
 
     return review;
@@ -79,15 +94,17 @@ export class ReviewsRepository {
         .findOneAndUpdate(filter, updateInfo)
         .session(session);
       newReview = await this.reviewModel.findOne(filter).session(session);
-    });
 
-    if (!oldReview || !newReview) {
-      throw new NotFoundException();
-    }
+      if (!oldReview || !newReview) {
+        throw new NotFoundException();
+      }
 
-    this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
-      key: newReview.id,
-      value: new UpdatedEvent(oldReview, newReview),
+      await firstValueFrom(
+        this.kafka.emit(CommonConstants.REVIEWS_TOPIC, {
+          key: newReview.id,
+          value: new UpdatedEvent(oldReview, newReview),
+        }),
+      );
     });
 
     return newReview;
