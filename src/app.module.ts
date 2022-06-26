@@ -18,7 +18,7 @@ import { ReviewsModule } from "./reviews/reviews.module";
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       context: ({ req, res }) => ({ req, res }),
     }),
-    MongooseModule.forRoot(process.env.REVIEWS_DB),
+    MongooseModule.forRoot(process.env.REVIEWS_DB, { autoIndex: false }),
     ReviewsModule,
     GamesModule,
   ],
