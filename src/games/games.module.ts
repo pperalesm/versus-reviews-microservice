@@ -1,13 +1,10 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { BrokerEvent, BrokerEventSchema } from "backend-common";
 import {
   Review,
   ReviewSchema,
 } from "src/reviews/domain/entities/review.entity";
-import {
-  GameEventSchema,
-  GameEvent,
-} from "./domain/entities/game-event.entity";
 import { Game, GameSchema } from "./domain/entities/game.entity";
 import { GamesService } from "./domain/games.service";
 import { GamesRepository } from "./infrastructure/games.repository";
@@ -16,7 +13,7 @@ import { GamesRepository } from "./infrastructure/games.repository";
   imports: [
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
     MongooseModule.forFeature([
-      { name: GameEvent.name, schema: GameEventSchema },
+      { name: BrokerEvent.name, schema: BrokerEventSchema },
     ]),
     MongooseModule.forFeature([{ name: Review.name, schema: ReviewSchema }]),
   ],

@@ -1,14 +1,11 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectConnection, InjectModel } from "@nestjs/mongoose";
+import { BrokerEvent, BrokerEventDocument } from "backend-common";
 import { Connection, Model } from "mongoose";
 import {
   Review,
   ReviewDocument,
 } from "src/reviews/domain/entities/review.entity";
-import {
-  GameEvent,
-  GameEventDocument,
-} from "../domain/entities/game-event.entity";
 import { Game, GameDocument } from "../domain/entities/game.entity";
 
 @Injectable()
@@ -17,8 +14,8 @@ export class GamesRepository {
     @InjectConnection() private connection: Connection,
     @InjectModel(Game.name)
     private gameModel: Model<GameDocument>,
-    @InjectModel(GameEvent.name)
-    private eventModel: Model<GameEventDocument>,
+    @InjectModel(BrokerEvent.name)
+    private eventModel: Model<BrokerEventDocument>,
     @InjectModel(Review.name)
     private reviewModel: Model<ReviewDocument>,
   ) {}
